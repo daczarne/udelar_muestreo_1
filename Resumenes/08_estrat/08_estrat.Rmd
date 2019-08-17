@@ -1,0 +1,66 @@
+---
+title: "Muestreo estratificado"
+author: "Daniel Czarnievicz"
+date: "2017"
+output: pdf_document
+header-includes:
+   - \everymath{\displaystyle}
+   - \usepackage{mathrsfs}
+   - \usepackage[spanish]{babel}
+   - \usepackage{xcolor}
+   - \DeclareMathOperator{\E}{\mathbf{E}}
+   - \DeclareMathOperator{\V}{\mathbf{Var}}
+   - \DeclareMathOperator{\COV}{\mathbf{Cov}}
+   - \DeclareMathOperator{\AV}{\mathbf{AVar}}
+   - \usepackage{multirow, hhline}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+El muestreo estratificado consiste en particionar la población $U = \{ 1; \ldots; k; \ldots; N \}$ en $H$ estratos distintos $U_1; \ldots; U_h; \ldots; U_H$, y tomar una muestra aleatoria de forma independiente en cada uno de ellos. Para construir los estratos se debe utilizar algún tipo de información auxiliar. Los estratos deben ser tales que:
+\begin{center}
+	\begin{tabular}{c c c c c}
+	$\bigcup\limits_{h=1}^{H} U_h = U$ & & y & & $U_i \cap U_j = \emptyset \: \: \forall i \neq j$
+	\end{tabular}
+\end{center}
+
+Llamaremos $N_h$ al tamaño del estrato $h$, es decir, $\#U_h = N_h$. Luego entonces $N = \sum\limits_{h=1}^{H} N_h$. Por su parte, el total poblacional puede escribirse de varias formas:
+$${\color{red} \star } \: \: t_y = \sum\nolimits_U y_k = \sum\limits_{h=1}^{H} \sum\nolimits_{U_h} y_k = \sum\limits_{h=1}^{H} t_{y_h} = \sum\limits_{h=1}^{H} N_h \, \bar{y}_{U_h}$$
+
+Por otro lado, llamando $w_h = \frac{N_h}{N}$ al peso relativo de cada estrato, tenemos que:
+$${\color{red} \star } \: \: \bar{y}_U = \frac{1}{N} \sum\nolimits_U y_k = \frac{1}{N} \sum\limits_{h=1}^{H} N_h \, \bar{y}_{U_h} = \sum\limits_{h=1}^{H} w_h \, \bar{y}_{U_h}$$
+
+# Estrategia de selección
+
+Para cada estrato $U_h$ se selecciona una muestra $s_h$ de tamaño $n_{S_h}$ bajo el diseño $p_h(.)$. La selección dentro de cada estrato se realiza de forma independiente. La muestra queda conformada por $s = \bigcup\limits_{h=1}^{H} s_h$. El tamaño muestral es $n_s = \sum\limits_{h=1}^{H} n_{S_h}$. Dada la independencia, el diseño viene dado por:
+$$p(s) = \prod\limits_{h=1}^{H} p_h(s_h)$$
+
+# Probabilidades de inclusión
+
+Las probabilidades de inclusión inducidas por el diseño serán:
+$${\color{red} \star } \: \: \pi_k = P(k \in s) = P(k \in s_h) \: \: \forall k \in U; \: \: h = 1; \ldots; H$$
+$${\color{red} \star } \: \:  \pi_{kl} = P(k;l \in s) = \left\{ 
+									\begin{array}{c c l}
+									\pi_{kl} & \text{si} & k;l \in U_h, \: \: h = 1; \ldots; H \\
+									\pi_k \, \pi_l & \text{si} & k \in U_i \text{ y } l \in U_j, \text{ con } i \neq j
+									\end{array} \right.$$
+$${\color{red} \star } \: \: \Delta_{kl} = \left\{	
+										\begin{array}{c c l}
+										\pi_{kl} - \pi_k \, \pi_l & \text{si} & k;l \in U_h, \: \: h = 1; \ldots; H \\
+										0 & \text{si} & k \in U_i \text{ y } l \in U_j, \text{ con } i \neq j
+										\end{array} \right.$$
+
+Por lo tanto, los $\pi_{kl}$ son inducidos por $p_h(.)$ o por $p_i(.)$ y $p_j(.)$
+
+# El estimador $\hat{t}_{\pi}$
+
+El estimador $\pi$ de un total será entonces la suma de los estimadores $\pi$ para los totales de cada estrato:
+$${\color{red} \star } \: \: \hat{t}_{\pi} = \sum\nolimits_s y_k^{\checkmark} = \sum\limits_{h=1}^{H} \sum\nolimits_{s_h} y_k^{\checkmark} = \sum\limits_{h=1}^{H} \hat{t}_{\pi_h}$$
+$${\color{red} \star } \: \: E_{ST}(\hat{t}_{\pi}) = E_{ST} \left( \sum\limits_{h=1}^{H} \sum\nolimits_{s_h} y_k^{\checkmark} \right) = \sum\limits_{h=1}^{H} E_{ST} \left( \sum\nolimits_{s_h} y_k^{\checkmark} \right) = \sum\limits_{h=1}^{H} \sum\nolimits_{U_h} E_{ST}(I_k) \, y_k^{\checkmark} =$$
+$$= \sum\limits_{h=1}^{H} \sum\nolimits_{U_h} y_k = \sum\limits_{h=1}^{H} t_{y_h} = t_y$$
+$${\color{red} \star } \: \: V_{ST}(\hat{t}_{\pi}) = V_{ST} \left( \sum\limits_{h=1}^{H} \hat{t}_{\pi_h} \right) = \sum\limits_{h=1}^{H} V_{p_h(s_h)}(\hat{t}_{\pi_h}) = \sum\limits_{h=1}^{H} \left[ \sum\sum\nolimits_{U_h} \Delta_{kl} \, y_k^{\checkmark} \, y_l^{\checkmark} \right]$$
+$${\color{red} \star } \: \: \hat{V}_{ST}(\hat{t}_{\pi}) = \sum\limits_{h=1}^{H} \hat{V}_{p_h(s_h)} (\hat{t}_{\pi_h}) = \sum\limits_{h=1}^{H} \left[ \sum\sum\nolimits_{s_h} \Delta_{kl}^{\checkmark} \, y_k^{\checkmark} \, y_l^{\checkmark} \right]$$
+$${\color{red} \star } \: \: E_{ST} \left( \hat{V}_{ST}(\hat{t}_{\pi}) \right) = E_{ST} \left( \sum\limits_{h=1}^{H} \left[ \sum\sum\nolimits_{s_h} \Delta_{kl}^{\checkmark} \, y_k^{\checkmark} \, y_l^{\checkmark} \right] \right) = \sum\limits_{h=1}^{H} \left[ E_{ST} \left( \sum\sum\nolimits_{s_h} \Delta_{kl}^{\checkmark} \, y_k^{\checkmark} \, y_l^{\checkmark} \right) \right] = $$
+$$= \sum\limits_{h=1}^{H} \left[ \sum\sum\nolimits_{U_h} E_{ST}(I_k;I_l) \, \Delta_{kl}^{\checkmark} \, y_k^{\checkmark} \, y_l^{\checkmark} \right] = \sum\limits_{h=1}^{H} \left[ \sum\sum\nolimits_{U_h} \Delta_{kl} \, y_k^{\checkmark} \, y_l^{\checkmark} \right] = V_{ST}(\hat{t}_{\pi})$$
