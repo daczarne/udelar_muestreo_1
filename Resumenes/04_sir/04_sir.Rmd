@@ -1,0 +1,93 @@
+---
+title: "Diseño ordenado SIR"
+author: "Daniel Czarnievicz"
+date: "2017"
+output: pdf_document
+header-includes:
+   - \everymath{\displaystyle}
+   - \usepackage{mathrsfs}
+   - \usepackage[spanish]{babel}
+   - \usepackage{xcolor}
+   - \DeclareMathOperator{\E}{\mathbf{E}}
+   - \DeclareMathOperator{\V}{\mathbf{Var}}
+   - \DeclareMathOperator{\COV}{\mathbf{Cov}}
+   - \DeclareMathOperator{\AV}{\mathbf{AVar}}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Estrategia de selección
+
+Se realizan $m$ extracciones con reposición de una población de tamaño $N$. En cada extracción, el $k$-ésimo elemento tiene probabilidad $p_k = \, ^1\!/_N$ de ser seleccionado. Dado que se muestrea con reposición, los elementos pueden ser extraidos más de una vez. El mecanismo de extracción genera una \textit{muestra ordenada}: $os = \{k_1;\ldots;k_i;\ldots;k_m\}$.
+
+Se define la variable aleatoria $r_k$, la cual mide la cantidad de veces que el elemento $k$ es sorteado. Por lo tanto, $r_k \sim Bin(m; \, ^1\!/_N)$. Si $N$ es lo suficientemente grande, esta probabilidad puede aproximarse mediante una distribución Poisson: $r_k \overset{a}{\sim} Poisson(^m\!/_N)$. Dada la distribución Binomial de $r_k$,
+$$P(\text{``extraer } r_k \text{ veces el elemento } k \text{''}) = {{m}\choose{r}} \left( \frac{1}{N}\right)^r \left( 1 - \frac{1}{N} \right)^{m-r}$$
+
+\begin{center}
+	\begin{tabular}{l c r}
+	$\color{red} \star \color{black} \: \: E(r_k) = \frac{m}{N}$ & & $\color{red} \star \color{black} \: \: V(r_k) = \frac{m}{N} \left(1 - \frac{1}{N}\right) \doteq \frac{m}{N}$
+	\end{tabular}
+\end{center}
+
+La probabilidad de que el elemento $k$ nunca sea seleccionado en las $m$ extracciones es:
+$$P(\text{``no selecionar } k \text{ en ninguna de las } m \text{ extraciciones''}) = \left( 1 - \frac{1}{N}\right)^{m} $$
+
+Mientras que:
+$$P(\text{``el elemento } k \text{ sea extraido''}) = P(r_k \geq 1) = 1 - P(r_k < 1) = 1 - P(r_k = 0) = 1 - \left( 1 - \frac{1}{N} \right)^m $$
+
+En cada una de las extracciones, la probabilidad de que el elemento $k$ sea seleccionado es $p_k$, donde ${\textstyle \sum_U} \; p_k = 1$. De esta forma $p(os) = \prod\limits_{i=1}^m p_{k_i}$. En el diseño ordenado $SIR$, los $p_k$ se eligen de forma que todos los elementos tengan la misma probabilidad de ser seleccionados, por lo tanto: $p_k = \, ^1\!/_N$.
+
+Dado que existen $N^m$ muestras ordenadas de largo $m$, y las mismas son equiprobables, la probabilidad de seleccionar una muestra ordenada cualquiera es:
+$$p(os) = \left\{	\begin{array}{c c}
+					N^{-m} & \text{si la muestra ordenada es de tamanaño } m \\
+					0 & \text{ en otro caso}
+					\end{array} \right.$$
+
+Cada muestra ordenada, $os$, induce una muestra, $s$, tal que 
+$$s=\{k:k=k_i \text{ para algun } i = 1; \ldots; m \}$$
+
+# Probabilidades de inclusión
+
+Las probabilidades de inclusión de primer orden son:
+$${\color{red} \star } \: \: \pi_k = P(k \in s) = P(r_k \geq 1) = 1 - \left(1 - \frac{1}{N} \right)^m \: \: \forall k \in U$$
+
+Las probabilidades de inclusión de segundo orden son:
+$${\color{red} \star } \: \: \pi_{kl} = P(k;l \in s) = 1 - \left[ 2 \left(1 - \frac{1}{N} \right)^m - \left( 1 - \frac{1}{N}\right)^{2m} \right] \: \: \forall k \neq l \in U$$
+
+# El estimador $\hat{t}_{pwr}$
+
+$${\color{red} \star } \: \: \hat{t}_{pwr} = \frac{1}{m} \sum\limits_{i=1}^{m} \frac{y_{k_i}}{p_{k_i}} = \frac{N}{m} \sum\limits_{i=1}^{m} y_{k_i} = N \bar{y}_{os}$$
+$${\color{red} \star } \: \: V_1 = \sum\nolimits_U \left( \frac{y_k}{p_k} - t_y \right)^2 p_k = \frac{1}{N} \sum\nolimits_U \Big( N y_k - N \bar{y}_U \Big)^2 = N (N-1) S^2_{y_U}$$
+$${\color{red} \star } \: \: V_{SIR}(\hat{t}_{pwr}) = \frac{V_1}{m} = \frac{N}{m} (N-1) S^2_{y_U}$$
+$${\color{red} \star } \: \: \hat{V}_1 = \frac{1}{m-1} \sum\limits_{i=1}^{m} \left( \frac{y_{k_i}}{p_{k_i}} - \hat{t}_{pwr} \right)^2 = \frac{1}{m-1} \sum\limits_{i=1}^{m} \Big(N y_{k_i} - N \bar{y}_{os} \Big)^2 = N^2 S^2_{y_{os}}$$
+$${\color{red} \star } \: \: \hat{V}_{SIR}(\hat{t}_{pwr}) = \frac{\hat{V}_1}{m} = \frac{N^2}{m} S^2_{y_{os}} \: \: \text{ donde } \: \: S^2_{y_{os}} = \frac{1}{m-1} \sum\limits_{i=1}^{m} \Big( y_{k_i} - \bar{y}_{os} \Big)^2$$
+
+# El estimador $\hat{\bar{y}}_{U}$
+
+$${\color{red} \star } \: \: \hat{\bar{y}}_U = \frac{\hat{t}_{pwr}}{N}$$
+$${\color{red} \star } \: \: V_{SIR}(\hat{\bar{y}}_U) = V_{SIR}\left( \frac{\hat{t}_{pwr}}{N} \right) = \frac{1}{N^2} \, V_{SIR}(\hat{t}_{pwr}) = \frac{1}{N^2} \frac{V_1}{m} = \frac{N-1}{Nm} S^2_{y_U}$$
+$${\color{red} \star } \: \: \hat{V}_{SIR}(\hat{\bar{y}}_U) = \hat{V}_{SIR}\left( \frac{\hat{t}_{pwr}}{N} \right) = \frac{1}{N^2} \, \hat{V}_{SIR}(\hat{t}_{pwr}) = \frac{1}{N^2} \frac{\hat{V}_1}{m} = \frac{N^2 S^2_{y_{os}}}{N^2m} = \frac{S^2_{y_{os}}}{m}$$
+
+# El estimador $\hat{t}_{\pi}$
+
+Para derivar el estimador $\pi$ del total se debe trabajar con la muestra ($s$) inducida por el diseño ordenado. Dado que los elementos podrían repetirse, $n_S$ es aleatoria. Para $m \geq 2$, $\hat{t}_{pwr}$ y $\hat{t}_{\pi}$ no tienen por qué coincidir.
+$${\color{red} \star } \: \: \hat{t}_{\pi} = \sum\nolimits_s y_k^{\checkmark} = \sum\nolimits_s \frac{y_k}{\pi_k} = \sum\nolimits_s \frac{y_k}{1 - \left( 1 - \frac{1}{N} \right)^m} $$
+
+# El estimador $\hat{t}_{alt}$
+
+Otro estimador insesgado pasado en el muestra $s$ es el estimador $\hat{t}_{alt}$, donde:
+$${\color{red} \star } \: \: \hat{t}_{alt} = N \, \bar{y}_s = \frac{N}{n_s} \sum\nolimits_s y_k$$
+
+Si $E_{SIR}(n_S) = n = N \left[ 1 - \left(1 - \frac{1}{N} \right)^m \right]$, entonces $\hat{t}_{alt} = \frac{n}{n_s} \, \hat{t}_{\pi}$
+
+# Efecto diseño
+
+Si $m=n$:
+$${\color{red} \star } \: \: \frac{V_{SIR}(\hat{t}_{pwr})}{V_{SI}(\hat{t}_{\pi})} = \frac{\frac{N}{m}(N-1) S^2_{y_U}}{\frac{N^2}{n} (1-f) S^2_{y_U}} = \frac{N-1}{N} \, \frac{1}{1-f} \doteq \frac{1}{1-f}$$
+
+# Tamaño muestral
+
+En caso que se quiera estimar $t_y$ utilizando $\hat{t}_{pwr}$ bajo un diseño $SIR$ con $m$ extracciones:
+$${\color{red} \star } \: \: \varepsilon^2 \doteq z_{1 - \, ^{\alpha}\!/_2}^2 V_{SIR}(\hat{t}_y) = z_{1 - \, ^{\alpha}\!/_2}^2 N(N-1) \frac{S^2_{y_U}}{m} \Rightarrow \color{blue}\boxed{ m = \frac{1}{\varepsilon^2} \Big[ z_{1 - \, ^{\alpha}\!/_2}^2 \, N(N-1) S^2_{y_U} \Big] }$$
