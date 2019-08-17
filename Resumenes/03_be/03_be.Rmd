@@ -1,0 +1,78 @@
+---
+title: "Diseño BE"
+author: "Daniel Czarnievicz"
+date: "2017"
+output: pdf_document
+header-includes:
+   - \everymath{\displaystyle}
+   - \usepackage{mathrsfs}
+   - \usepackage[spanish]{babel}
+   - \usepackage{xcolor}
+   - \DeclareMathOperator{\E}{\mathbf{E}}
+   - \DeclareMathOperator{\V}{\mathbf{Var}}
+   - \DeclareMathOperator{\COV}{\mathbf{Cov}}
+   - \DeclareMathOperator{\AV}{\mathbf{AVar}}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Estrategia de selección
+
+En el diseño $BE$ primero se elije $\pi$ tal que $0 \leq \pi \leq 1$. Para cada elemento del marco muestral se sortea $\varepsilon_k$ de una distribución $Unif(0;1)$. Si $\varepsilon_k < \pi$, el $k$-ésimo elemento es incluido en la muestra. Por lo tanto, el diseño muestral es el siguiente:
+$$p(s)= P(S=s) = \underbrace{\pi \ldots \pi}_{n_S \text{ veces}} \underbrace{(1 - \pi) \ldots (1 - \pi)}_{N-n_S \text{ veces}} = \pi^{n_S} (1 - \pi)^{N-n_S}$$
+
+# Probabilidades de inclusión
+
+Dada la estrategia de selección, $I_k \sim Ber(\pi) \; \; \forall k \in U$. Por lo tanto:
+$${\color{red} \star } \: \: \pi_k = P(k \in s) = \pi \; \; \forall k \in U$$
+
+Dado que los $\varepsilon_k$ se sortean de forma independiente, los eventos $\{k \text{ es seleccionado} \}$ y $\{l \text{ es seleccionado} \}$ son independientes, por lo tanto:
+$${\color{red} \star } \: \: \pi_{kl} = P(k;l \in s) = E_{BE}(I_kI_l) = \pi^2 \; \; \forall k \neq l \in U$$
+$${\color{red} \star } \: \: \Delta_{kl} = COV_{BE}(I_k;I_l) = \left\{	\begin{array}{c c l}
+																		\pi(1 - \pi) & \text{si} & k=l \\
+																		0 & \text{si} & k \neq l
+																		\end{array} \right. $$
+
+# El estimador $\hat{t}_{\pi}$
+
+$${\color{red} \star } \: \: \hat{t}_{\pi} = {\textstyle \sum_s} \; y_k^{\checkmark} = {\textstyle \sum_s} \; \frac{y_k}{\pi} \Rightarrow \color{blue}\boxed{ \hat{t}_{\pi} = \frac{1}{\pi} \; {\textstyle \sum_s} \; y_k}$$
+$${\color{red} \star } \: \: E_{BE}(\hat{t}_{\pi}) = E_{BE} \left( \frac{1}{\pi} \; {\textstyle \sum_s} \; y_k \right) = \frac{1}{\pi} \; E_{BE} \Big( {\textstyle \sum_s} \; y_k \Big) = \frac{1}{\pi} \; {\textstyle \sum_U} \; E_{BE}(I_k) y_k = {\textstyle \sum_U} y_k = t_y$$
+$${\color{red} \star } \: \: V_{BE} \Big(\hat{t}_{\pi}\Big) = {\textstyle \sum\sum_U} \Delta_{kl} \, y_k^{\checkmark} \, y_l^{\checkmark} = {\textstyle \sum\sum_U} \pi (1 - \pi) \left( \frac{y_k}{\pi} \right)^2 = \frac{1-\pi}{\pi} \; {\textstyle \sum_U} y_k^2 \Rightarrow$$
+$$\Rightarrow \color{blue}\boxed{V_{BE} \Big(\hat{t}_{\pi}\Big) = \frac{1-\pi}{\pi} \Big[ (N-1)S^2_{y_U} + N \, \bar{y}_U^2 \Big] }$$
+
+Un estimador insesgado para la varianza viene dado por:
+$${\color{red} \star } \: \: \hat{V}_{BE} \Big(\hat{t}_{\pi}\Big) = \frac{1-\pi}{\pi^2} \Big[ (n-1)S^2_{y_s} + n \bar{y}_s^2 \Big]$$
+
+# Estimador $\hat{t}_{alt}$
+
+Supongamos que: $E_{BE} \big( n_S \big) = N \, \pi = n$, entonces:
+$${\color{red} \star } \: \: \hat{t}_{\pi} = \frac{N}{n} \sum\nolimits_s y_k$$
+$${\color{red} \star } \: \: V_{BE} \big( \hat{t}_{\pi} \big) = N^2 \left( \frac{1}{n} - \frac{1}{N} \right) S^2_{y_U} \Bigg[ 1 - \frac{1}{N} + CV_{y_U}^2 \Bigg]$$
+
+El estimador $\hat{t}_{alt}$ estará dado por:
+$${\color{red} \star } \: \: \hat{t}_{alt} = N \, \sum\nolimits_s \; \frac{y_k}{n_S} = N \bar{y}_s = \frac{n}{n_S} \, \sum\nolimits_s y_k = \frac{N \, \pi}{n_S} \, \frac{1}{\pi} \sum\nolimits_s y_k = \frac{n}{n_S} \hat{t}_{\pi} = \left( \frac{N}{^{n_S} / _{\pi}} \right) \hat{t}_{\pi} = \frac{N}{\hat{N}} \, \hat{t}_{\pi}$$
+$$\text{ donde } \hat{N} = \sum\nolimits_s \frac{1}{\pi} = \frac{N}{n} \sum\nolimits_s \, 1 = N \left( \frac{n_S}{n} \right)$$
+$${\color{red} \star } \: \: V_{BE}(\hat{t}_{alt}) \doteq \frac{N}{\pi} (1-\pi) S^2_{y_U} = \frac{N^2}{n} (1-f) S^2_{y_U} \: \: \text{ si } \pi = \, ^n\!/_N$$
+$${\color{red} \star } \: \: \frac{V_{BE}(\hat{t}_{\pi})}{V_{BE}(\hat{t}_{alt})} \doteq 1 + \frac{1}{CV_{y_U}^2} $$
+
+# Efecto diseño
+
+Para calcular el Deff se debe considerar un muestreo tal que $n_S = E(n_S) = N\pi$ para asegurar una comparación justa. Luego también es conveniente escribir la varianza del estimador como:
+$${\color{red} \star } \: \: V_{BE} \Big(\hat{t}_{\pi}\Big) = \frac{1 - \pi}{\pi} NS^2_{y_U} \Big[ 1 - \frac{1}{N} + \frac{1}{CV_{y_U}^2} \Big] \text{ donde } CV_{y_U} = \frac{S_{y_U}}{\bar{y}_U}$$
+
+Por lo tanto, teniendo en cuenta que $\pi \overset{\mathrm{BE}}{=} \, ^n\!/_N \overset{\mathrm{SI}}{=} f$,
+$$Deff(BE;\hat{t}_{\pi}) = \frac{V_{BE}(\hat{t}_{\pi})}{V_{SI}(\hat{t}_{\pi})} = \frac{\frac{1 - \pi}{\pi} N \, S^2_{y_U} \Big[ 1 - \frac{1}{N} + \frac{1}{CV_{y_U}^2} \Big]}{\frac{N^2}{n} (1-f) S^2_{y_U}} = 1 - \frac{1}{N} + \frac{1}{CV_{y_U}^2} \doteq 1 + \frac{1}{CV_{y_U}^2} > 1$$
+$${\color{red} \star } \: \: \frac{V_{BE}(\hat{t}_{alt})}{V_{SI}(\hat{t}_{\pi})} \doteq 1$$
+
+# Tamaño muestral
+
+$$n_S \sim Binomial(N;\pi) \Rightarrow E_{BE}(n_S) = N\pi; \: \: V_{BE}(n_S) = N \pi (1 - \pi)$$
+$$IC_{95\%}^{n_S} = \Big[ N\pi \pm z_{(1 - \, ^{\alpha}\!/_2)} \sqrt{N\pi(1-\pi)} \Big] $$
+
+Para determinar $n$, llamemos $n=E(n_S)$ dado que el tamaño es aleatorio. Tomemos $\pi = \, ^n\!/ _N$, luego entonces:
+$${\color{red} \star } \: \: \varepsilon^2 \doteq z_{1 - \, ^{\alpha}\!/_2}^2 V_{BE}(\hat{t}_y) = z_{1 - \, ^{\alpha}\!/_2}^2 \left( \frac{1}{\pi} - 1 \right) \sum\nolimits_U y_k^2 \Rightarrow \color{blue}\boxed{ n = \frac{z_{1 - \, ^{\alpha}\!/_2}^2 N \sum\nolimits_U y_k^2}{\varepsilon^2 + z_{1 - \, ^{\alpha}\!/_2}^2 \sum\nolimits_U y_k^2} }$$
+
+Teniendo en cuenta que: $\sum\nolimits_U y_k^2 = (N-1) S^2_{y_U} + N \bar{y}_U^2 = \left( 1 - \frac{1}{N} + \frac{1}{cv^2} \right) N S^2_{y_U}$, podemos escribir:
+$$\color{blue}\boxed{ n = \frac{z_{1 - \, ^{\alpha}\!/_2}^2 N^2 k S^2_{y_U} }{\varepsilon^2 + z_{1 - \, ^{\alpha}\!/_2}^2 N k S^2_{y_U}} \: \text{ donde } \: k = 1 - \frac{1}{N} + \frac{1}{cv^2} }$$
