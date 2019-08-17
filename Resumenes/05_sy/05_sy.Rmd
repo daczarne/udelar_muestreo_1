@@ -1,0 +1,178 @@
+---
+title: "Diseño SY"
+author: "Daniel Czarnievicz"
+date: "2017"
+output: pdf_document
+header-includes:
+   - \everymath{\displaystyle}
+   - \usepackage{mathrsfs}
+   - \usepackage[spanish]{babel}
+   - \usepackage{xcolor}
+   - \DeclareMathOperator{\E}{\mathbf{E}}
+   - \DeclareMathOperator{\V}{\mathbf{Var}}
+   - \DeclareMathOperator{\COV}{\mathbf{Cov}}
+   - \DeclareMathOperator{\AV}{\mathbf{AVar}}
+   - \usepackage{multirow, hhline}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Estrategia de selección
+
+Se fija un número $a$ llamado *intervalo de muestreo*, de forma tal que $n = \big[ \, ^N\!/_a \big] \Rightarrow N = na + c$ con $0 \leq c < a$. Luego se sortea $r \sim Unifd(1;\ldots;a)$ llamado *arranque aleatorio*. La muestra queda conformada por:
+$$s = \big\{k:k = r + (j-1)a \leq N; \: \: j = 1; \ldots ;n_S \big\}$$
+
+El espacio muestral será: $\mathscr{S}_{SY} = \{ s_1; \ldots; s_a\}$ donde $s_i \cap s_j = \emptyset \: \forall i \neq j$ y $\bigcup \limits_{i=1}^{a} s_i = U$.
+
+El diseño muestral será entonces:
+$$p(s) = 
+\left\{
+\begin{array}{c c}
+^1\!/_a & \text{ si } s \in \mathscr{S}_{SY} \\
+0 & \text{ en otro caso}
+\end{array} \right.$$
+
+Dada la estrategia de selección, las muestras posibles serán:
+\begin{center}
+	\begin{tabular}{c | c c c c c}
+	Muestra & $s_1$ & $\ldots$ & $s_r$ & $\ldots$ & $s_a$ \\
+	\hline
+	\multirow{4}{*}{U} & $y_1$ & $\ldots$ & $y_k$ & $\ldots$ & $y_a$ \\
+	 & $y_{1+a}$ & $\ldots$ & $y_{r+a}$ & $\ldots$ & $y_{2a}$ \\
+	 & $\vdots$ & & $\vdots$ & & $\vdots$ \\
+	 & $y_{1+(n-1)a}$ & $\ldots$ & $y_{r+(n-1)a}$ & $\ldots$ & $y_{na}$ \\
+	\hline
+	Total & $t_{s_1}$ & $\ldots$ & $t_{s_r}$ & $\ldots$ & $t_{s_a}$ \\
+	\hline
+	Media & $\bar{y}_{s_1}$ & $\ldots$ & $\bar{y}_{s_r}$ & $\ldots$ & $\bar{y}_{s_a}$ \\
+	\hline
+	\end{tabular}
+\end{center}
+
+\subsection{Tamaño muestral}
+
+El tamaño muestral será entonces:
+$$n_S = \left\{ \begin{array}{c c}
+				n+1 & \text{ si } 0 < r \leq c \\
+				n & \text{ si } c < r \leq a
+				\end{array} \right. $$
+
+Con probabilidades:
+$$p(n_S) = 
+\left\{
+\begin{array}{l c c c l}
+P(n_S = n+1) & = & P(r \leq c) & = & \, ^c\!/_a \\
+P(n_S = n) & = & P(r > c) & = & 1 - \, ^c\!/_a
+\end{array} \right.$$
+
+# Control del tamaño muestral
+
+\begin{itemize}
+\item \textbf{Intervalo de muestreo fraccionario:} 
+
+Sea $a =\, ^N\!/_n$  con $n \in \mathbb{N}$ el tamaño deseado, y sea $\varepsilon \sim Unif(0;a)$ el arranque aleatorio. La muestra se forma con las etiquetas $k$ que cumplen:
+$$s = \{k: k-1 < \varepsilon + (j-1)a \leq k; \; \; j = 1; \ldots; n \}$$
+
+De igual forma, si $r = \varepsilon n \sim Unif(0;n)$, la muestra se forma por las etiquetas:
+$$s = \{k: (k-1)n < r + (j-1)N \leq k \, n; \; \; j = 1; \ldots; n \}$$
+
+Las probabilidades de inclusión serán: $\pi_k = P(k \in s) = n \, \frac{1}{N} = \frac{n}{N} = \frac{1}{a} \: \: \forall k \in U$
+
+%%%%% PONER EL DIBUJITO %%%%%
+
+\item \textbf{Muestreo sistemático circular}
+
+La población se ordena de forma circular, de forma que al elemento $N$ le sigue el elemento $1$. Se sortea $r \sim Unifd(1;N)$. Sea $a = \big[ \, ^N\!/_n \big]$. La muestra será:
+$$S = \Bigg\{ k: k = \left\{\begin{array}{l c l}
+							r + (j-1)a & \text{si} & r + (j-1)a \leq N \\
+							r + (j-1)a - N & \text{si} & r + (j-1)a > N
+							\end{array} \right.; \: \: j=1;\ldots;n \Bigg\}$$
+
+\end{itemize}
+
+# Probabilidades de inclusión
+
+$${\color{red} \star } \: \: \pi_k = P(k \in s) = P(\text{``seleccionar la muestra } s_r \text{''}) = \,^1\!/_a \: \: \forall k \in U$$
+$${\color{red} \star } \: \: \pi_{kl} = P(k;l \in s) = \left\{	\begin{array}{c c}
+																^1\!/_a & \text{ si } k;l \in s_r \in \mathscr{S}_{SY} \\
+																0 & \text{ en otro caso}
+																\end{array} \right. $$
+
+\noindent Por lo tanto, el diseño no es medible por lo que no existen estimadores insesgados de $V_{SY}(\hat{t}_{\pi})$.
+
+\subsection{El estimador $\hat{t}_{\pi}$}
+$${\color{red} \star } \: \: t_y = \sum\nolimits_U y_k = \sum\limits_{r=1}^a t_{s_r} = \sum\limits_{r=1}^a \sum\nolimits_{s_r} y_k$$
+$${\color{red} \star } \: \: \hat{t}_{\pi} = \sum\nolimits_s y_k^{\checkmark} = \sum\nolimits_s \frac{y_k}{^1\!/_a} = a \sum\nolimits_s y_k = a \, t_s = \frac{N}{n} t_s = N \, \bar{y}_s$$
+
+Esto puede pensarse como si tuviéramos una población $U_t = \{ t_{s_1}; \ldots; t_{s_r}; \ldots; t_{s_a} \}$ y se quiere estimar $t = \sum\nolimits_{U_t} t_{s_r}$. Se toma una muestra bajo un diseño $SI$ de tamaño $n=1$, así $\hat{t}_{\pi} = t_s^{\checkmark} = \frac{t_s}{^1\!/_a} = a t_s$.
+$${\color{red} \star } \: \: Rec(\hat{t}_{\pi}) = \{ a \, t_{s_1}; \ldots; a \, t_{s_a} \}$$
+$${\color{red} \star } \: \: P(\hat{t}_{\pi} = a \, t_{s_r}) = \, ^1\!/_a \: \: \forall r = 1; \ldots; a$$
+$$= a \sum\nolimits_U E_{SY}(I_k) y_k = a \sum\nolimits_U \frac{1}{a} \, y_k = \sum\nolimits_U y_k = t_y$$
+$${\color{red} \star } \: \: E_{SY}(\hat{t}_{\pi}) = E_{SY}(a \, t_S) = a \, E_{SY}(t_s) = a \, E_{SY} \left( \sum\nolimits_s y_k \right) = a \, E_{SY} \left( \sum\nolimits_U I_k y_k \right) =$$
+$$= a \sum\nolimits_U E(I_k) y_k = a \sum\nolimits_U \frac{1}{a} \, y_k = \sum\nolimits_U y_k = t_y$$
+$${\color{red} \star } \: \: E_{SY}(\hat{t}_{\pi}) = \sum\limits_{r=1}^{a} \frac{\hat{t}_{\pi}}{a} = \sum\limits_{r=1}^{a} a \frac{t_{s_r}}{a} = \sum\limits_{r=1}^{a} t_{s_r} = t_y$$
+$${\color{red} \star } \: \: V_{SY}(\hat{t}_{\pi}) = \sum\sum\nolimits_U \Delta_{kl} \, y_k^{\checkmark} \, y_l^{\checkmark} = \sum\sum\nolimits_U (\pi_{kl} - \pi_k \, \pi_l) \frac{y_k}{\pi_k} \frac{y_l}{\pi_l} =$$
+$$= \sum\sum\nolimits_U \left( \frac{\pi_{kl}}{\pi_k \, \pi_l} \right) y_k \, y_l - \sum\sum\nolimits_U y_k \, y_l =$$
+Luego como $\pi_{kl} = 0$ si $k$ y $l$ no pertenecen a la misma muestra, $\sum\sum\nolimits_U$ puede cambiarse por $\sum\limits_{r=1}^{a} \left( \sum\sum\nolimits_{s_r} \right)$.
+$$= \sum\limits_{r=1}^{a} \left( \sum\sum\nolimits_{s_r} a \, y_k \, y_l \right) - \Big( \underbrace{\sum\nolimits_U y_k}_{t_y} \Big)^2 = a \sum\limits_{r=1}^{a} \Big( \underbrace{\sum\nolimits_{s_r} y_k}_{t_{s_r}} \Big)^2 =$$
+$$= a \sum\limits_{r=1}^{a} t_{s_r}^2 - (a \bar{t})^2 = a \left( \sum\limits_{r=1}^{a} t_{s_r}^2 - a \, \bar{t}^2 \right) = a \sum\limits_{r=1}^{a} \left( t_{s_r} - \bar{t} \right)^2 = a \left( \frac{a-1}{a-1} \right) \sum\limits_{r=1}^{a} \left( t_{s_r} - \bar{t} \right)^2 =$$
+$$= a(a-1) \underbrace{\frac{1}{a-1} \sum\limits_{r=1}^{a} \left( t_{s_r} - \bar{t} \right)^2 }_{S^2_t} = a(a-1) S^2_t$$
+
+Si $t_{s_1} = t_{s_2} = \ldots = t_{s_a} = \, ^t\!/_a \Rightarrow V_{SY}(\hat{t}_{\pi}) = 0$. $V_{SY}(\hat{t}_{\pi})$ depende de cómo se ordene la población.
+
+$${\color{red} \star } \: \: V_{SY}(\hat{t}_{\pi}) = a \sum\limits_{r=1}^{m} \big( t_{s_r} - \bar{t} \big)^2 = a \sum\limits_{r=1}^{m} \left( n \bar{y}_{s_r} - \frac{t}{a} \right)^2 =$$
+$$= a \sum\limits_{r=1}^{m} \left( \frac{N}{a} \bar{y}_{s_r} - \frac{N}{a} \bar{y}_U \right)^2 = \frac{N^2}{a} \sum\limits_{r=1}^{m} \big( \bar{y}_{s_r} - \bar{y}_U \big)^2 = N \, n \sum\limits_{r=1}^{m} \big( \bar{y}_{s_r} - \bar{y}_U \big)^2 = N \times SSB$$
+
+Como $SST$ es fija, aumentar $SSW$ implica disminuir $SSB$. Conviene que cada una de las muestras posibles sean muy heterogéneas, de forma de que $SSW$ sea grande. Medimos la homogeneidad mediante:
+$${\color{red} \star } \: \: \delta = 1 - \frac{N-1}{N-a} \, \frac{SSW}{SST} = 1 - \frac{S^2_{y_W}}{S^2_{y_U}} \text{ donde } S^2_{y_W} = \frac{SSW}{N-a} \text{ y } S^2_{y_U} = \frac{SST}{N-1}$$
+
+\begin{itemize}
+\item $\delta_{\max} = 1 \Leftrightarrow S^2_{y_W} = 0 \Rightarrow SSW = 0 \Rightarrow$ los grupos son lo más homogéneos posible $\Rightarrow V_{SY}(\hat{t}_{\pi})$ es la mayor posible.
+\item $\delta_{\min} = - \frac{a-1}{N-a} \Leftrightarrow SSW = SST \Rightarrow SSB = 0 \Rightarrow$ los grupos son lo más heterogéneos posible $\Rightarrow V_{SY}(\hat{t}_{\pi}) = 0$.
+\end{itemize}
+
+# Efecto diseño
+
+Una forma alternativa de escribir la varianza del estimador $\pi$ es:
+$$\color{red} \star \color{black} \: \: V_{SY}(\hat{t}_{\pi}) = N \times SSB = N \big( SST - SSW \big) =$$
+$$= N \left[ (N-1) S^2_{y_U} - SSW \, \frac{SST}{SST} \, \frac{N-a}{N-a} \right] = N \left[ (N-1) S^2_{y_U} - SSW \, \frac{(N-1) S^2_{y_U}}{SST} \, \frac{N-a}{N-a} \right] =$$
+$$= N \Bigg[ (N-1) S^2_{y_U} - (N-a) S^2_{y_U} \, \underbrace{ \frac{SSW}{SST} \, \frac{N-1}{N-a} }_{1 - \delta} \Bigg] = N \Bigg[ (N-1) S^2_{y_U} + (\delta - 1) \underbrace{ (N-a) }_{ N - \frac{N}{n} } S^2_{y_U} \Bigg] =$$
+$$= N \Bigg[ (N-1) S^2_{y_U} + (\delta - 1) \underbrace{ \left( N - \frac{N}{n} \right) }_{ \frac{N}{n}(n-1) } S^2_{y_U} \Bigg] = N \Bigg[ (N-1) S^2_{y_U} + (\delta - 1) \left( \frac{N}{n}(n-1) \right) S^2_{y_U} \Bigg] =$$
+$$= N \left[ (N-1) S^2_{y_U} + \delta \, \frac{N}{n}(n-1) S^2_{y_U} - \frac{N}{n}(n-1) S^2_{y_U} \right] =$$
+$$= N \left[ \left( N - 1 - \frac{N}{n} (n-1) \right) S^2_{y_U} + \delta \, \frac{N}{n}(n-1) S^2_{y_U} \right] =$$
+$$= N \left[ \left( N - 1 - N + \frac{N}{n} \right) S^2_{y_U} + \delta \, \frac{N}{n}(n-1) S^2_{y_U} \right] =$$
+$$= N \left[ \frac{N}{n} \left( 1 - \frac{n}{N} \right) S^2_{y_U} + \delta \, \frac{N}{n}(n-1) S^2_{y_U} \right] =$$
+$$= N \left[ \frac{N}{n} ( 1 - f ) S^2_{y_U} + \delta \, \frac{N}{n}(n-1) S^2_{y_U} \right] =$$
+$$= \frac{N^2}{n} S^2_{y_U} \Big[ ( 1 - f ) + \delta (n-1) \Big] \text{ con } f = \frac{n}{N} = \frac{1}{a}$$
+$${\color{red} \star } \: \: Deff(SY; \hat{t}_{\pi}) = \frac{\frac{N^2}{n} S^2_{y_U} \big[ (1-f) + \delta (n-1) \big]}{\frac{N^2}{n} (1-f) S^2_{y_U}} = \frac{(1-f) + \delta (n-1)}{1-f} = 1 + \frac{\delta (n-1)}{1-f}$$
+
+$$\frac{n-1}{1-f} > 0 \Rightarrow \left\{	\begin{array}{c c l}
+											\text{si} & \delta > 0 & \Rightarrow SI \text{ es más eficietne que } SY \\
+											\text{si} & \delta = 0 & \Rightarrow SI \text{ y } SY \text{ son igualmente eficientes} \\
+											\text{si} & \delta < 0 & \Rightarrow SY \text{ es más eficietne que } SI \\
+											\end{array} \right. $$
+
+$\delta < 0 \Leftrightarrow S^2_{y_W} > S^2_{y_U}$, esto ocurre cuando los grupos son suficientemente heterogéneos.
+
+# Estimación de la varianza
+
+Dado que no existe un estimador insesgado para $V_{SY}(\hat{t}_{\pi}$, se emplean las siguientes tácticas:
+\begin{enumerate}
+\item Si existe razón para creer que $V_{SY} \leq V_{SI}$, se utiliza la varianza del $SI$, por lo que:
+$$\hat{V}_{SY}(\hat{t}_{\pi}) = \frac{N^2}{n} (1-f) S^2_{y_{s_r}} \text{  donde  } S^2_{y_{s_r}} = \frac{1}{n-1} \sum\nolimits_{s_r} \big( y_k - \bar{y}_{s_r} \big)^2$$
+
+\item Tomar más de un arranque aleatorio, $m>1$, con intervalo de muestreo $ma$. Ahora cada $SY$ contribuye una fracción $^n\!/_m$ de la muestra.
+
+Sean $r_1; \ldots; r_m$ los diferentes arranques y, por simplicidad, se supone que $^n\!/_m$ y $a$ son enteros. La muestra será:
+$$ s = \big\{ k: k = r_i + (j-1) m a; \: \: i = 1; \ldots; m; \: \: j = 1; \ldots; \, ^n\!/_m \big\}$$
+
+Las probabilidades de inclusión serán:
+$${\color{red} \star } \: \: \pi_k = \frac{m}{ma} = \frac{n}{N} \: \: \forall k \in U$$
+$${\color{red} \star } \: \: \pi_{kl} = \left\{	\begin{array}{c c l}
+												\frac{n}{N} & \text{si} & k;l \text{ pertenecen a la misma muestra} \\
+												\\
+												\frac{n}{N} \, \frac{m-1}{ma-1} & \text{si} & k;l \text{ pertenecen a distintas muestras}
+												\end{array} \right.$$
+\end{enumerate}
