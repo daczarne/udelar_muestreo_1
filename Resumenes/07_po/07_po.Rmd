@@ -1,0 +1,102 @@
+---
+title: "Diseño PO"
+author: "Daniel Czarnievicz"
+date: "2017"
+output: pdf_document
+header-includes:
+   - \everymath{\displaystyle}
+   - \usepackage{mathrsfs}
+   - \usepackage[spanish]{babel}
+   - \usepackage{xcolor}
+   - \DeclareMathOperator{\E}{\mathbf{E}}
+   - \DeclareMathOperator{\V}{\mathbf{Var}}
+   - \DeclareMathOperator{\COV}{\mathbf{Cov}}
+   - \DeclareMathOperator{\AV}{\mathbf{AVar}}
+   - \usepackage{multirow, hhline}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Estrategia de selección
+
+El diseño $PO$ es un diseño que permite probabilidades de inclusión distintas para cada elemento de la población, y puede verse como una generalización del diseño $BE$. Dada una población $U = \{ 1; \ldots; k; \ldots; N \}$, consideremos $\pi_1; \ldots; \pi_k; \ldots; \pi_N$ valores predetermiados y no necesariamente iguales, tales que $0 < \pi_k \leq 1 \: \: \forall k \in U$. Luego, sean $\varepsilon_1; \ldots; \varepsilon_k; \ldots; \varepsilon_N$ iid $Unif(0;1)$. La muestra se conforma de la siguiente manera:
+$$s =  \{ k: \varepsilon_k < \pi_k ; \: \: k \in U \}$$
+
+El diseño $PO$ está dado por: 
+$$p(s) = \prod\limits_{k \in S} \pi_k \: \prod\limits_{k \in U-S} (1 - \pi_k) \: \: \forall s \in \mathscr{S}_{PO}$$
+
+# Probabilidades de inclusión
+
+Como las indicadores son independientes e $I_k \sim Ber(\pi_k) \: \: \forall k \in U$, las probabilidades de inclusión que induce el diseño son:
+$${\color{red} \star } \: \: P(k \in s) = \pi_k \: \: \forall k \in U$$
+$${\color{red} \star } \: \: P(k;l \in s) = \pi_{kl} = \pi_k \, \pi_l \: \: \forall k \neq l \in U$$
+
+Además:
+$${\color{red} \star } \: \: \Delta_{kl} = \pi_{kl} - \pi_k \, \pi_l = \left\{	\begin{array}{c c l}
+																				0 & \text{si} & k \neq l \\
+																				\pi_k (1 - \pi_l) & \text{si} & k = l
+																		\end{array} \right. $$
+
+# Elección de los $\pi_k$
+
+Un criterio razonable sería elegir los $\pi_k$ de forma tal que minimicen la variarianza del estimador $\hat{t}_{\pi}$, sujetos a un tamaño de muestra esperado fijo, $n$. Se debe resolver el siguiente problema de optimización:
+$$	\begin{array}{c}
+	\min\limits_{\pi_k} \left\{ V_{PO}(\hat{t}_{\pi}) \right\} \\
+	\text{s.a. } \sum\nolimits_U \pi_k = n
+	\end{array}$$
+
+Como $V_{PO}(\hat{t}_{\pi}) = \sum\nolimits_U \left( \frac{1}{\pi_k} - 1 \right) y_k^2 = \sum\nolimits_U \frac{y-k^2}{\pi_k} - \sum\nolimits_U y_k^2$ y, además, $\sum\nolimits_U y_k^2$ y $\sum\nolimits_U \pi_k = n$ están dadas, el problema es equivalente a resolver:
+$$\min\limits_{\pi_k} \left\{ \left( \sum\nolimits_U \frac{y-k^2}{\pi_k} - \sum\nolimits_U y_k^2 \right) \left( \sum\nolimits_U \pi_k \right) \right\} \approx \min\limits_{\pi_k} \left\{ \left( \sum\nolimits_U \frac{y-k^2}{\pi_k} \right) \left( \sum\nolimits_U \pi_k \right) \right\}$$
+
+Por la desigualdad de Cauchy-Schwartz:\footnote{Desigualdad de Cauchy-Schwartz: \\
+
+$\left( \sum\nolimits_U x_k \, z_k \right)^2 \leq \left( \sum\nolimits_U x_k \right) \left( \sum\nolimits_U z_k \right) $ y la igualdad se cumple $\Leftrightarrow x_k = \lambda \, z_k \: \: \forall k \in U, \; \lambda$ fijo.}
+$$\left( \sum\nolimits_U \frac{y-k^2}{\pi_k} \right) \left( \sum\nolimits_U \pi_k \right) = \left[ \sum\nolimits_U \left( \frac{y_k}{\sqrt{\pi_k}} \right)^2 \right] \Bigg[ \sum\nolimits_U \big( \sqrt{\pi_k} \big)^2 \Bigg] \geq \left[ \sum\nolimits_U \left( \frac{y_k}{\sqrt{\pi_k}} \big( \sqrt{\pi_k} \big) \right) \right]^2 = \Big( \sum\nolimits_U y_k \Big)^2 $$
+
+La igualdad se cumple $\Leftrightarrow \frac{y_k}{\sqrt{\pi_k}} = \lambda \sqrt{\pi_k} \Rightarrow \pi_k = \frac{y_k}{\lambda} \: \: \forall k \in U$.
+
+Ahora bien, como $\sum\nolimits_U \pi_k = \sum\nolimits_U \frac{y_k}{\lambda} = \frac{t_y}{\lambda} = n \Rightarrow \lambda = \frac{t_y}{n}$, por lo que, la mejor elección de los $\pi_k$, sujeto a que $0 < \pi_k \leq 1 \: \: \forall k \in U$, viene dada por:
+$$\color{red} \star \color{black} \: \: \pi_k = n \, \frac{y_k}{t_y} = \frac{n \, y_k}{\sum\nolimits_U y_k} \: \: \forall k \in U$$
+
+Lo anterior no es asequible dado que $y_k$ no es conocido para toda la población. Por lo tanto, se debe trabajar con una variable auxiliar que cumpla que:
+\begin{itemize}
+\item $x_k$ es conocida para toda la población.
+\item $x_k > 0$ para toda la población.
+\item $x_k \doteq c \, y_k$ para toda la población.
+\end{itemize}
+
+En este caso, $\pi_k = n \, \frac{x_k}{t_x} = \frac{n \, x_k}{\sum\nolimits_U x_k} \: \: \forall k \in U$
+
+No tener información auxiliar podría pensarse como una situación en la que $x_k = 1 \: \: \forall k \in U$, con lo que se obtendría que $\pi_k = \frac{n}{N}$. Esto último es lo que justifica el uso de diseños con probabilidades de inclusión iguales para todos los elementos de la población, cuando no se dispone de información auxiliar.
+
+# El estimador $\hat{t}_{\pi}$
+
+$${\color{red} \star } \: \: \hat{t}_{\pi} = \sum\nolimits_s y_k^{\checkmark} = \sum\nolimits_s \frac{y_k}{\pi_k}$$
+$${\color{red} \star } \: \: V_{PO}(\hat{t}_{\pi}) = \sum\sum\nolimits_U \Delta_{kl} \, y_k^{\checkmark} \, y_l^{\checkmark} = \sum\nolimits_U \pi_k (1 - \pi_k) \, y_k^{\checkmark^2} = \sum\nolimits_U \left( \frac{1}{\pi_k} - 1 \right) y_k^2$$
+$${\color{red} \star } \: \: \hat{V}_{PO}(\hat{t}_{\pi}) = \sum\nolimits_s (1 - \pi_k) \frac{y_k^2}{\pi_k^2} = \sum\nolimits_s \frac{1}{\pi_k} \left( \frac{1}{\pi_k} - 1 \right) y_k^2$$
+
+Si los $\pi_k$ fueron elegidos de forma óptima, entonces tendremos que:
+$${\color{red} \star } \: \: \hat{t}_{\pi} = \sum\nolimits_s \frac{y_k}{\pi_k} = \sum\nolimits_s \frac{y_k}{\frac{n \, y_k}{\sum\nolimits_s y_k}} = \sum\nolimits_s \left( \sum\nolimits_U \frac{y_k}{n} \right) = \left( \sum\nolimits_U \frac{y_k}{n} \right) \left( \sum\nolimits_s \, 1 \right) = \frac{n_S}{n} \, t_y $$
+
+Con lo que la varianza de $\hat{t}_{\pi}$ dependerá únicamente de $n_S$.
+
+# El estimador $\hat{t}_{alt}$
+
+$${\color{red} \star } \: \: \hat{t}_{alt} = N \, \frac{\sum\nolimits_s y_k^{\checkmark}}{\sum\nolimits_s \frac{1}{\pi_k}} = N \, \frac{\hat{t}_{\pi}}{\hat{N}}$$
+<!--
+$${\color{red} \star } \: \: E_{PO}(\hat{t}_{alt}) = $$
+$${\color{red} \star } \: \: V_{PO}(\hat{t}_{alt}) = $$
+$${\color{red} \star } \: \: \hat{V}_{PO}(\hat{t}_{alt}) = $$
+$${\color{red} \star } \: \: E_{PO} \left( \hat{V}_{PO}(\hat{t}_{alt}) \right) = $$
+-->
+
+# Tamaño muestral
+
+El tamaño de muestra en un diseño $PO$ es aleatorio. Dado que $n_S = \sum\nolimits_U I_k$:
+\begin{center}
+	\begin{tabular}{c c c c}
+	${\color{red} \star } \: \: E_{PO}(n_S) = \sum\nolimits_U \pi_k$ & & & ${\color{red} \star } \: \: V_{PO}(n_S) = \sum\nolimits_U \pi_k(1 - \pi_k)$	
+	\end{tabular}
+\end{center}
