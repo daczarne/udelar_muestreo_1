@@ -1,0 +1,70 @@
+---
+title: "Muestreo por clusters"
+author: "Daniel Czarnievicz"
+date: "2017"
+output: pdf_document
+header-includes:
+   - \everymath{\displaystyle}
+   - \usepackage{mathrsfs}
+   - \usepackage[spanish]{babel}
+   - \usepackage{xcolor}
+   - \usepackage{multirow, hhline}
+   - \DeclareMathOperator{\E}{\mathbf{E}}
+   - \DeclareMathOperator{\V}{\mathbf{Var}}
+   - \DeclareMathOperator{\COV}{\mathbf{Cov}}
+   - \DeclareMathOperator{\AV}{\mathbf{AVar}}
+   - \DeclareMathOperator*{\di}{\mathrm{d}\!}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+En el muestreo por clusters el problema principal es que no se tiene ni se puede construir un marco muestral que permita realizar muestreo directo de elementos. La población $U = \{ 1; \ldots; k; \ldots; N \}$ se particiona en $N_I$ subpoblaciones (clusters), $\{ U_1; \ldots; U_i; \ldots; U_{N_I}\}$, donde $U = \bigcup\limits_{i \in U_I} U_i$. El  set de clusters lo representamos como $U_I = \{ 1; \ldots; i; \ldots; N_I \}$.
+
+Llamamos $N_i$ a la cantidad de elementos poblacionales en el $i$-ésimo cluster. De esta forma, 
+$$N = \sum\limits_{i \in U_I} N_i = \sum\nolimits_{U_I} N_i$$
+
+# Estrategia de selección
+
+Una muestra $s_I$ se selecciona de $U_I$ de acuerdo con el diseño $p_I(.)$. Es decir, se seleccionan clusters. Luego todos los elementos dentro de los clusters seleccionados son relevados. Es decir, se censa los clusters. La muestra queda entonces conformada por $s = \bigcup\limits_{i \in s_I} U_i$. El tamaño de $s_I$ se denota como: $n_I$ si la muestra es de tamaño fijo, o $n_{s_I}$ si la muestra es de tamaño aleatorio. Téngase presente que si $N_i$ varía, entonces $n_s$ variará. Dado que los clusters seleccionados son censados, $n_s = \sum\nolimits_{s_I} N_i$.
+
+# Probabilidades de inclusión
+
+Probabilidades de seleccionar los distintos clusters:
+$${\color{red} \star } \: \: \pi_{I_i} = P(\text{``selecicionar el cluster } i \text{''}) = P(i \in s_I) = \sum\limits_{s_I \ni i} p_I(s_I)$$
+$${\color{red} \star } \: \: \pi_{I_{ij}} = P(\text{``selecicionar los clusters } i \text{ y } j \text{''}) = \left\{
+			\begin{array}{c c c}
+			P(i;j \in s_I) = \sum\limits_{s_I \ni i;j} p_I(s_I) & \text{si} & i \neq \\
+			\pi_{I_{ii}} = \pi_{I_i} & \text{si} & i = j
+			\end{array} \right. $$
+\begin{center}
+	\begin{tabular}{c c c}
+	$\color{red} \star \color{black} \: \: \Delta_{I_{ij}} = \pi_{I_{ij}} - \pi_{I_i} \, \pi_{I_j}$ & & $\color{red} \star \color{black} \: \: \Delta_{I_{ij}}^{\checkmark} = \frac{\Delta_{I_{ij}}}{\pi_{I_{ij}}}$
+	\end{tabular}
+\end{center}
+
+Probabilidades de inclusión de las unidades poblacionales:
+$$\color{red} \star \color{black} \: \: \pi_k = P(k \in s) = P(i \in s_I) = \pi_{I_i}$$
+$$\color{red} \star \color{black} \: \: \pi_{kl} = P(k;l \in s) = \left\{
+							\begin{array}{l c l c l}
+							P(i \in s_I) & = & \pi_{I_i} & \text{si} & k;l \in U_i \\
+							P(i;j \in s_I) & = & \pi_{I_{ij}} & \text{si} & k \in U_i; \: l \in U_j
+							\end{array} \right. $$
+$$\color{red} \star \color{black} \: \: \pi_{kk} = \pi_k$$
+
+# El estimador $\hat{t}_{\pi}$
+
+$$\color{red} \star \color{black} \: \: t_y = \sum\nolimits_U y_k = \sum\nolimits_{U_I} t_{y_i}$$
+$$\color{red} \star \color{black} \: \: \hat{t}_{\pi} = \sum\nolimits_{s_I} t_{y_i}^{\checkmark} = \sum\nolimits_{s_I} \frac{t_{y_i}}{\pi_{I_i}}$$
+$$\color{red} \star \color{black} \: \: E \left( \hat{t}_{\pi} \right) = E \left( \sum\nolimits_{s_I} t_{y_i}^{\checkmark} \right) = \sum\nolimits_{U_I} E(I_k) \, \frac{ t_{y_i} }{ \pi_{I_i} } = \sum\nolimits_{U_I} \pi_k \, \frac{ t_{y_i} }{ \pi_{I_i} } = \sum\nolimits_{U_I} \pi_{I_i} \, \frac{ t_{y_i} }{ \pi_{I_i} } = \sum\nolimits_{U_I} t_{y_i} = t_y$$
+$$\color{red} \star \color{black} \: \: V_{p_I(s_I)} \left( \hat{t}_{\pi} \right) = \sum\sum\nolimits_{U_I} \Delta_{I_{ij}} \, t_{y_i}^{\checkmark} \, t_{y_j}^{\checkmark}$$
+$$\color{red} \star \color{black} \: \: \hat{V}_{p_I(s_I)} \left( \hat{t}_{\pi} \right) = \sum\sum\nolimits_{s_I} \Delta_{I_{ij}}^{\checkmark} \, t_{y_i}^{\checkmark} \, t_{y_j}^{\checkmark}$$
+
+Si $p_I(.)$ es de tamaño fijo, entonces se cumple que:
+$$\color{red} \star \color{black} \: \: V_{p_I(s_I)} \left( \hat{t}_{\pi} \right) = - \frac{1}{2} \sum\sum\nolimits_{U_I} \Delta_{I_{ij}} \left( t_{y_i}^{\checkmark} - t_{y_j}^{\checkmark} \right)^2 $$
+$$\color{red} \star \color{black} \: \: V_{p_I(s_I)} \left( \hat{t}_{\pi} \right) = - \frac{1}{2} \sum\sum\nolimits_{s_I} \Delta_{I_{ij}}^{\checkmark} \left( t_{y_i}^{\checkmark} - t_{y_j}^{\checkmark} \right)^2 $$
+
+Si $t_{y_i}^{\checkmark} = \frac{ t_{y_i} }{ \pi_{I_i} }$ es constante para todos los $i$ clusters, entones $V_{p_I(s_I)}(\hat{t}_{\pi}) = 0$. Por lo tanto, si podemos elegir $\pi_{I_i} \, \dot{\propto} \, t_{y_i}$ el muestreo por clusters será eficiente. Si lo $N_i$ son conocidos, entonces $\pi_{I_i} \, \propto \, N_i$. Dado que $t_{y_i} = N_i \, \bar{y}_{U_I} = \sum\nolimits_{U_I} y_k$, esta será una buena elección si hay poca variación entre los $\bar{y}_{U_I}$. Si todos los $\bar{y}_{U_I}$ son iguales, entonces $V_{p_I(s_I)}(\hat{t}_{\pi}) = 0$.
+
+Tomar $\pi_{I_i}$ constante para todos los clusters es una elección pobre si los $N_i$ varían mucho.
