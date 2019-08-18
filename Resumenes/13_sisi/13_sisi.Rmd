@@ -1,0 +1,113 @@
+---
+title: "Diseño SISI"
+author: "Daniel Czarnievicz"
+date: "2017"
+output: pdf_document
+header-includes:
+   - \everymath{\displaystyle}
+   - \usepackage{mathrsfs}
+   - \usepackage[spanish]{babel}
+   - \usepackage{xcolor}
+   - \usepackage{multirow, hhline}
+   - \DeclareMathOperator{\E}{\mathbf{E}}
+   - \DeclareMathOperator{\V}{\mathbf{Var}}
+   - \DeclareMathOperator{\COV}{\mathbf{Cov}}
+   - \DeclareMathOperator{\AV}{\mathbf{AVar}}
+   - \DeclareMathOperator*{\di}{\mathrm{d}\!}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Estrategia de selección
+
+El diseño $SISI$ consiste en la siguiente estrategia de selección:
+
+- **Primer etapa**: bajo un diseño $SI$ se selecciona una muestra $s_I$ de tamaño $n_I$ de los $N_I$ clusters.
+
+- **Segunda etapa**: $\forall i \in s_I$ se toma una muestra bajo diseño $SI$ de tamaño $n_i$ de los $N_i$ elementos en el cluster $i$.
+
+# Probabilidades de inclusión
+
+## Probabilidades de inclusión para la primera etapa
+
+\begin{center}
+	\begin{tabular}{c c c}
+	${\color{red} \star } \: \: \pi_{I_i} = \frac{n_I}{N_I} \: \: \forall i \in U$ & & ${\color{red} \star } \: \: \pi_{I_{ij}} = \frac{n_I}{N_I} \, \frac{(n_I - 1)}{(N_I - 1)} \: \: \forall i \neq j \in U $
+	\end{tabular}
+\end{center}
+
+\begin{center}
+	\begin{tabular}{c c c c}
+	${\color{red} \star } \: \: \Delta_{I_{ij}} = \left\{	
+			\begin{array}{c c c}
+			- \frac{f_I (1 - f_I)}{N_I - 1} & \text{si} & i \neq j \\
+			\\
+			f_I (1 - f_I) & \text{si} & i = j
+			\end{array} \right. $
+	&
+	&
+	${\color{red} \star } \: \: \Delta_{I_{ij}}^{\checkmark} = \frac{ \Delta_{I_{ij}} }{ \pi_{I_{ij}} } $
+	\end{tabular}
+\end{center}
+
+## Probabilidades de inclusión para la segunda etapa
+
+\begin{center}
+	\begin{tabular}{c c c}
+	${\color{red} \star } \: \: \pi_{k|i} = \frac{n_i}{N_i} \: \: \forall k \in i=1;\ldots;N_I $ 
+	& & 
+	${\color{red} \star } \: \: \pi_{kl|i} = \frac{n_i}{N_i} \, \frac{(n_i - 1)}{(N_i - 1)} \: \: \forall k \neq l \in i=1;\ldots;N_I$
+	\end{tabular}
+\end{center}
+
+\begin{center}
+	\begin{tabular}{c c c c}
+	${\color{red} \star } \: \: \Delta_{kl|i} = \left\{	
+			\begin{array}{c c c}
+			- \frac{f_i (1 - f_i)}{N_i - 1} & \text{si} & k \neq l \\
+			\\
+			f_i (1 - f_i) & \text{si} & k = l
+			\end{array} \right. $
+	&
+	&
+	${\color{red} \star } \: \: \Delta_{kl|i}^{\checkmark} = \frac{ \Delta_{kl|i} }{ \pi_{kl|i} }$
+	\end{tabular}
+\end{center}
+
+## Probabilidades de inclusión de los elementos
+
+\begin{center}
+	\begin{tabular}{c c c}
+	${\color{red} \star } \: \: \pi_k = \pi_{I_i} \, \pi_{k|i} \: \: \forall k \in U_i$
+	& &
+	${\color{red} \star } \: \: \pi_{kl} = \left\{ 
+		\begin{array}{l c l}
+		\pi_{I_i} \, \pi_{k|i} & \text{si} & k=l \in U_i \\
+		\pi_{I_i} \, \pi_{kl|i} & \text{si} & k;l \in U_i \\
+		\pi_{I_{ij}} \, \pi_{k|i} \, \pi_{l|j} & \text{si} & k \in U_i \text{ y } l \in U_j \end{array} \right. $
+	\end{tabular}
+\end{center}
+
+# El estimador $\hat{t}_{\pi}$
+
+$${\color{red} \star } \: \: \hat{t}_{\pi} = \sum\nolimits_{s} y_k^{\checkmark} = \sum\nolimits_{s_I} \sum\nolimits_{s_i} y_k^{\checkmark} = \sum\nolimits_{s_I} \sum\nolimits_{s_i} \frac{y_k}{\pi_k} = \sum\nolimits_{s_I} \sum\nolimits_{s_i} \frac{y_k}{\pi_{I_i} \, \pi_{k|i}} =$$
+$$= \sum\nolimits_{s_I} \frac{1}{\pi_{I_i}} \sum\nolimits_{s_i} \frac{y_{k|i}}{\pi_{k|i}} = \frac{N_I}{n_I} \sum\nolimits_{s_I} N_i \, \bar{y}_{s_i} = \frac{N_I}{n_I} \sum\nolimits_{s_I} \hat{t}_{\pi_i} $$
+
+$${\color{red} \star } \: \: V_{SISI} (\hat{t}_{\pi}) = \frac{N_I^2}{n_I} (1 - f_I) S^2_{t_{U_I}} + \frac{N_I}{n_I} \sum\nolimits_{U_i} \frac{N_i^2}{n_i} (1 - f_i) S^2_{y_{U_i}}$$
+
+\newpage
+
+donde:
+
+- $S^2_{t_{U_I}} = \frac{1}{N_I - 1} \sum\nolimits_{U_I} \Big( t_{y_i} - \bar{t}_{U_I} \Big)^2$ con $\bar{t}_{U_I} = \frac{1}{N_I} \sum\nolimits_{U_I} t_{y_i}$
+
+- $S^2_{y_{U_i}} = \frac{1}{N_i	- 1} \sum\nolimits_{U_i} \Big( y_{k|i} - \bar{y}_{U_i} \Big)^2$ con $\bar{y}_{U_i} = \frac{1}{N_i} \sum\nolimits_{U_i} y_{k|i}$
+
+$${\color{red} \star } \: \: \hat{V}_{SISI} (\hat{t}_{\pi}) = \frac{N_I^2}{n_I} (1 - f_I) S^2_{\hat{t}_{s_I}} + \frac{N_I}{n_I} \sum\nolimits_{s_i} \frac{N_i^2}{n_i} (1 - f_i) S^2_{y_{s_i}}$$
+donde:
+
+- $S^2_{\hat{t}_{s_I}} = \frac{1}{n_I - 1} \sum\nolimits_{s_I} \left( \hat{t}_{\pi_i} - \frac{1}{n_I} \sum\nolimits_{s_I} \hat{t}_{\pi_i} \right)^2$
+
+- $S^2_{y_{s_i}} = \frac{1}{n_i	- 1} \sum\nolimits_{s_i} \Big( y_{k|i} - \bar{y}_{s_i} \Big)^2$ con $\bar{y}_{s_i} = \frac{1}{n_i} \sum\nolimits_{s_i} y_{k|i}$
