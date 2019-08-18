@@ -1,0 +1,69 @@
+---
+title: "Diseño SIC"
+author: "Daniel Czarnievicz"
+date: "2017"
+output: pdf_document
+header-includes:
+   - \everymath{\displaystyle}
+   - \usepackage{mathrsfs}
+   - \usepackage[spanish]{babel}
+   - \usepackage{xcolor}
+   - \usepackage{multirow, hhline}
+   - \DeclareMathOperator{\E}{\mathbf{E}}
+   - \DeclareMathOperator{\V}{\mathbf{Var}}
+   - \DeclareMathOperator{\COV}{\mathbf{Cov}}
+   - \DeclareMathOperator{\AV}{\mathbf{AVar}}
+   - \DeclareMathOperator*{\di}{\mathrm{d}\!}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Estrategia de selección
+
+Se toma una muestra bajo diseño $SI$ de tamaño fijo $n_I$ de los $N_I$ clusters en $U_I$. Luego todos los elementos en los clusters seleccionados son relevados.
+
+<!--
+# Probabilidades de inclusión
+-->
+
+# El estimador $\hat{t}_{\pi}$
+
+$${\color{red} \star } \: \: \hat{t}_{\pi} = N_I \, \bar{t}_{s_I} = N_I \sum\nolimits_{s_I} \frac{t_{y_i}}{n_I}$$
+$${\color{red} \star } \: \: V_{SIC} (\hat{t}_{\pi}) = \frac{N_I^2}{n_I} (1 - f_I) S^2_{t_{U_I}}$$
+$$\text{ donde } S^2_{t_{U_I}} = \frac{1}{N_I - 1} \sum\nolimits_{U_I} \Big( t_{y_i} - \bar{t}_{U_I} \Big)^2 \text{ y } \bar{t}_{U_I} = \sum\nolimits_{U_I} \frac{t_{y_i}}{N_I}$$
+$${\color{red} \star } \: \: \hat{V}_{SIC} (\hat{t}_{\pi}) = \frac{N_I^2}{n_I} (1 - f_I) S^2_{t_{s_I}}$$
+$$\text{ donde } S^2_{t_{s_I}} = \frac{1}{n_I - 1} \sum\nolimits_{s_I} \Big( t_{y_i} - \bar{t}_{s_I} \Big)^2 \text{ y } \bar{t}_{s_I} = \sum\nolimits_{s_I} \frac{t_{y_i}}{n_I}$$
+
+# Efecto diseño
+
+Sea $\delta = 1 - \frac{S^2_{y_W}}{S^2_{y_U}}$ el coeficiente de homogeneidad donde:
+
+- $S^2_{y_W} = \frac{1}{N - N_I} \sum\nolimits_{U_I} \sum\nolimits_{U_i} \Big( y_k - \bar{y}_{U_i} \Big)^2$ es la pooled-variance interna de los clusters
+
+- $\bar{y}_{U_i} = \frac{1}{N_I} \sum\nolimits_{U_i} y_k$ es la media del $i$-ésimo cluster
+
+Si $S^2_{y_{U_i}} = \frac{1}{N_i - 1} \sum\nolimits_{U_i} \Big( y_k - \bar{y}_{U_i} \Big)^2$ es la varianza de $y$ en el cluster $U_i$, entonces:
+$$S^2_{y_W} = \frac{ \sum\nolimits_{U_I} (N_I - 1) S^2_{y_{U_i}} }{ \sum\nolimits_{U_I} (N_i - 1) }$$
+
+Por lo tanto, $S^2_{y_W}$ es el promedio ponderado de las varianzas $S^2_{y_{U_i}}$ en los $N_I$ clusters, siendo $N_i - 1$ los respectivos pesos. 
+
+$- \frac{N_I - 1}{N - N_I} \leq \delta \leq 1$
+
+- $\delta > 0 \Leftrightarrow S^2_{y_W} < S^2_{y_U}$
+
+- $\delta = 0 \Leftrightarrow S^2_{y_W} = S^2_{y_U}$
+
+- $\delta < 0 \Leftrightarrow S^2_{y_W} > S^2_{y_U}$
+
+Un $\delta$ pequeño implica que los elementos en el mismo cluster son disimiles en $y_k$. Un $\delta$ grande implica que los elementos en el mismo cluster tienen valores parecidos de $y_k$. Si $\delta = 1$, entonces la variación interna de todos los clusters es $0$. Si $\delta = - \frac{N_I - 1}{N - N_I}$ entonces $\bar{y}_{U_I}$ es igual para todos los clusters.
+
+Sea $\bar{N}$ el promedio de elementos por cluster: $\bar{N} = \frac{N}{N_I}$. Sea $K_I = \frac{N_I^2}{n_I}(1-f_I)$. Ses $COV$ la covarianza entre $N_i$ y $N_i \, \bar{y}^2_{U_i}$ tal que: $COV = \frac{1}{N_I - 1} \sum\nolimits_{U_I} (N_i - \bar{N}) N_i \, \bar{y}^2_{U_i}$. Por lo tanto: $S^2_{t_{U_I}} = \bar{N} \, S^2_{y_U} \left( 1 + \frac{N - N_I}{N_I - 1} \, \delta \right) + COV$. Con esto podemos entonces expresar la varianza como:
+$${\color{red} \star } \: \: V_{SIC} (\hat{t}_{\pi}) = \left( 1 + \frac{N - N_I}{N_I - 1} \, \delta \right) \bar{N} \, K_I S^2_{y_U} + K_I \, COV$$
+
+Luego, dado que $E(n_S) = n_I \, \bar{N} = n_I \, \frac{N}{N_I} = n$ podemos comprar el diseño $SIC$ con el diseño $SI$ de tamaño $n=n_I \, \bar{N}$, reescribiendo la varianza del $SIC$ como:
+$${\color{red} \star } \: \: V_{SIC} (\hat{t}_{\pi}) = \left( 1 + \frac{N - N_I}{N_I - 1} \, \delta \right) V_{SI} (\hat{t}_{\pi})  + K_I \, COV$$
+$${\color{red} \star } \: \: deff(SIC, \hat{t}_{\pi}) = \frac{ V_{SIC} (\hat{t}_{\pi}) }{ V_{SI} (\hat{t}_{\pi}) } = 1 + \frac{N - N_I}{N_I - 1} \, \delta + \frac{ COV }{ \bar{N} \, S^2_{y_U} }$$
+
+Si todos los clusters son de igual tamaño, entonces $COV = 0$, por lo que $V_{SIC} (\hat{t}_{\pi}) < V_{SI} (\hat{t}_{\pi}) \Leftrightarrow \delta < 0$, lo que requiere una variación intra-clusters lo suficientemente grande. Si el tamaño de los clusters no es fijo y la correlación entre $N_i$ y $N_i \, \bar{y}^2_{U_i}$ es positiva, el incremento de varianza debido a la selección por clusters puede empeorar significativamente dado que $K_I \, COV$ puede ser grande.
