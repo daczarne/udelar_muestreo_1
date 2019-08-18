@@ -18,3 +18,6 @@ Edición 2017
 [Muestreo en dos etapas](https://github.com/daczarne/muestreo1/blob/master/Resumenes/12_dos_etapas/12_dos_etapas.pdf)  
 [Diseño SISI](https://github.com/daczarne/muestreo1/blob/master/Resumenes/13_sisi/13_sisi.pdf)  
 
+## Implementación en R
+
+[Prueba 6](https://github.com/daczarne/muestreo1/blob/master/Parciales/Prueba%206/Informe_prueba_6.pdf)
