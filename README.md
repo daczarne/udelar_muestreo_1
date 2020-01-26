@@ -1,4 +1,7 @@
-# muestreo1 ![archived](https://img.shields.io/badge/lifecycle-archived-red.svg)
+# muestreo1  
+
+![archived](https://img.shields.io/badge/lifecycle-archived-red.svg)
+
 Resúmenes de Muestreo de Poblaciones Finitas 1  
 IESTA - FCEA - UDELAR  
 Edición 2017  
