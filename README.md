@@ -1,8 +1,6 @@
 # Muestreo de poblaciones finitas 1
 
 ![archived](https://img.shields.io/badge/lifecycle-archived-red.svg)  
-![labguages](https://img.shields.io/github/languages/count/daczarne/udelar_muestreo_1)  
-![top language](https://img.shields.io/github/languages/top/daczarne/udelar_muestreo_1)  
 
 Resúmenes de Muestreo de Poblaciones Finitas 1  
 IESTA - FCEA - UDELAR  
