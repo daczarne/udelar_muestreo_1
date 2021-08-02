@@ -1,6 +1,16 @@
 Laboratorios/08.06.2017/SIC/Lee_Fusionado_2015.sps linguist-vendored
-*.Rmd linguist-detectable
+
+*.bib linguist-detectable
+*.cfg linguist-detectable
+*.gitattributes linguist-detectable
+*.gitignore linguist-detectable
+*.mako linguist-detectable
 *.md linguist-detectable
 *.md linguist-documentation=false
+*.Rmd linguist-detectable
+*.sql linguist-detectable
+*.sql linguist-language=sql
+*.svg linguist-detectable
+*.toml linguist-detectable
 *.yml linguist-detectable
-*.yml linguist-vendored=false
+*.yaml linguist-detectable
